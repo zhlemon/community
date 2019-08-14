@@ -1,1 +1,1 @@
-## majiang Community
+## majiang Communit
