@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.learn.majiang.dto.AccessTokenDTO;
 import com.learn.majiang.dto.GithubUser;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 public class GithubProvider {
 
     public String getAccessToken(AccessTokenDTO accessTokenDTO) {
+        //okhttp post
         final MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
 
@@ -32,6 +34,7 @@ public class GithubProvider {
     }
 
     public GithubUser getUser(String accessToken) {
+        //okhttp get
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("https://api.github.com/user?access_token=" + accessToken)
