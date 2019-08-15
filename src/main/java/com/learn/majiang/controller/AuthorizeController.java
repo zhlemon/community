@@ -57,9 +57,11 @@ public class AuthorizeController {
             //登录成功
             //写入数据库user
             User user = new User();
+            //自己的token uuid实现
             String token1 = UUID.randomUUID().toString();
             user.setToken(token1);
             user.setName(githubUser.getName());
+            //这是git的account_id
             user.setAccount_id(String.valueOf(githubUser.getId()));
             user.setGmt_create(System.currentTimeMillis());
             user.setGmt_modified(user.getGmt_create());

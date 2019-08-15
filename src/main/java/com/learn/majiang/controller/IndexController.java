@@ -21,8 +21,10 @@ public class IndexController {
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("token")) {
                 String token = cookie.getValue();
+                //用cookie中的token查询数据库中是否有该用户
                 User user = userMapper.findByToken(token);
                 if (user != null) {
+                    //如果数据库中有该用户 则将用户放入session中
                     request.getSession().setAttribute("user", user);
                 }
                 break;
