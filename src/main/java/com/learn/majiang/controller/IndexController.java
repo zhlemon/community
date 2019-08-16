@@ -24,7 +24,7 @@ public class IndexController {
                 //用cookie中的token查询数据库中是否有该用户
                 User user = userMapper.findByToken(token);
                 if (user != null) {
-                    //如果数据库中有该用户 则将用户放入session中
+                    //如果数据库中有该用户 则将用户放入session中 页面拿到session.user显示
                     request.getSession().setAttribute("user", user);
                 }
                 break;

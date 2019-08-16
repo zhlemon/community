@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.learn.majiang.dto.AccessTokenDTO;
 import com.learn.majiang.dto.GithubUser;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
