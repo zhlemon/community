@@ -20,11 +20,12 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>5.0.3</version>
-        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.flywaydb/flyway-core -->
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>5.2.1</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -95,16 +96,16 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>5.0.5</version>
-                <configuration>
-                    <url>jdbc:mysql://127.0.0.1:3306/majiang?serverTimezone=UTC</url>
-                    <user>root</user>
-                    <password>123456</password>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.flywaydb</groupId>-->
+<!--                <artifactId>flyway-maven-plugin</artifactId>-->
+<!--                <version>5.0.5</version>-->
+<!--                <configuration>-->
+<!--                    <url>jdbc:mysql://127.0.0.1:3306/majiang?serverTimezone=UTC</url>-->
+<!--                    <user>root</user>-->
+<!--                    <password>123456</password>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 

@@ -7,14 +7,16 @@ public class User {
     private String token;
     private Long gmt_create;
     private Long gmt_modified;
+    private String bio;
 
-    public User(Integer id, String account_id, String name, String token, Long gmt_create, Long gmt_modified) {
+    public User(Integer id, String account_id, String name, String token, Long gmt_create, Long gmt_modified, String bio) {
         this.id = id;
         this.account_id = account_id;
         this.name = name;
         this.token = token;
         this.gmt_create = gmt_create;
         this.gmt_modified = gmt_modified;
+        this.bio = bio;
     }
 
     public User() {
@@ -68,6 +70,14 @@ public class User {
         this.gmt_modified = gmt_modified;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -77,6 +87,7 @@ public class User {
                 ", token='" + token + '\'' +
                 ", gmt_create=" + gmt_create +
                 ", gmt_modified=" + gmt_modified +
+                ", bio='" + bio + '\'' +
                 '}';
     }
 }
