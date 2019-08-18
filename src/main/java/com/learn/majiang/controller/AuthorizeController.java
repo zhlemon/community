@@ -67,6 +67,7 @@ public class AuthorizeController {
             user.setGmt_create(System.currentTimeMillis());
             user.setGmt_modified(user.getGmt_create());
             user.setBio(githubUser.getBio());
+            user.setAvatarUrl(githubUser.getAvatar_url());
             userMapper.insert(user);
             //向前端写入cookie
             response.addCookie(new Cookie("token",token1));
@@ -77,4 +78,5 @@ public class AuthorizeController {
             return "redirect:/";
         }
     }
+
 }
