@@ -13,4 +13,10 @@ public interface UserMapper {
   @Select("select * from user where token=#{token}")
   User findByToken(@Param("token") String token);
 
+
+  @Delete("delete from user where id=#{id}")
+  void deleteUser(@Param("id") Integer id);
+
+  @Select("select * from user where id=#{id}")
+  User findUserById(@Param("id") Integer id);
 }
