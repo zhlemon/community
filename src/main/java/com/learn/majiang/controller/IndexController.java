@@ -1,20 +1,18 @@
 package com.learn.majiang.controller;
 
-import com.learn.majiang.dto.QuestionDto;
-import com.learn.majiang.mapper.QuestionMapper;
+import com.learn.majiang.dto.PageDto;
 import com.learn.majiang.mapper.UserMapper;
-import com.learn.majiang.model.Question;
 import com.learn.majiang.model.User;
 import com.learn.majiang.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 public class IndexController {
@@ -27,9 +25,12 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(HttpServletRequest request,
-                        Model model) {
+                        Model model,
+                        @RequestParam(name = "page", defaultValue = "1") Integer page,
+                        @RequestParam(name = "size", defaultValue = "2") Integer size
+    ) {
         Cookie[] cookies = request.getCookies();
-        if(cookies!=null){
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
@@ -43,21 +44,18 @@ public class IndexController {
                     break;
                 }
             }
-        }else {
+        } else {
             return "index";
         }
 
-        List<QuestionDto> questionDtoList=questionService.list();
-        for (QuestionDto questionDto : questionDtoList) {
-            questionDto.setDescription("reset");
-        }
-        model.addAttribute("questions",questionDtoList);
+        PageDto pageDtoInfo = questionService.list(page,size);
+        model.addAttribute("pageDtoInfo", pageDtoInfo);
         return "index";
     }
 
     //退出登录
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request){
+    public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
 
         User user = (User) session.getAttribute("user");
