@@ -29,12 +29,15 @@ public class IndexController {
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
                         @RequestParam(name = "size", defaultValue = "2") Integer size
     ) {
+
+        PageDto pageDtoInfo = questionService.list(page, size);
+        model.addAttribute("pageDtoInfo", pageDtoInfo);
+
         Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
+        if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
                     String token = cookie.getValue();
-
                     //用cookie中的token查询数据库中是否有该用户
                     User user = userMapper.findByToken(token);
                     if (user != null) {
@@ -47,9 +50,6 @@ public class IndexController {
         } else {
             return "index";
         }
-
-        PageDto pageDtoInfo = questionService.list(page,size);
-        model.addAttribute("pageDtoInfo", pageDtoInfo);
         return "index";
     }
 
@@ -62,6 +62,6 @@ public class IndexController {
         userMapper.deleteUser(user.getId());
 
         session.removeAttribute("user");
-        return "redirect:/";
+        return "index";
     }
 }

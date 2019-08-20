@@ -53,7 +53,8 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String token = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(token);
-        System.out.println("----->bio"+githubUser.getBio());
+        System.out.println("bio----->"+githubUser.getBio());
+        System.out.println("iconUrl-->"+githubUser.getAvatar_url());
         if(githubUser!=null){
             //登录成功
             //写入数据库user

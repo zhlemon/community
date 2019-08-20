@@ -24,18 +24,11 @@ public class PageDto {
     private Integer totalPage;
 
     /**
-     * @param totalCount 记录总数
+     * @param totalPage 记录总数
      * @param page       请求的页码 /page
      * @param size       每页大小
      */
-    public void setPageInfo(Integer totalCount, Integer page, Integer size) {
-
-        Integer totalPage;
-        if (totalCount % size == 0) {
-            totalPage = totalCount / size;
-        } else {
-            totalPage = totalCount / size + 1;
-        }
+    public void setPageInfo(Integer totalPage, Integer page, Integer size) {
 
         this.totalPage = totalPage;
         this.currentPage = page;
