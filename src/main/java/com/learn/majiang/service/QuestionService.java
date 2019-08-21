@@ -44,10 +44,16 @@ public class QuestionService {
             page = totalPage;
         }
 
+        if (page == 0) {
+            page = 1;
+        }
+        Integer offset = size * (page - 1);
+
         pageDto.setPageInfo(totalPage, page, size);
         //通过page计算offset
-        Integer offset = size * (page - 1);
+
         //offset和size查数据库拿到question
+        System.out.println(offset);
         List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
@@ -72,7 +78,7 @@ public class QuestionService {
         //查记录总数
         System.out.println(userID);
         Integer totalCount = questionMapper.countByUserId(userID);
-        System.out.println("totalCount"+totalCount);
+        System.out.println("totalCount" + totalCount);
 
         Integer totalPage;
         if (totalCount % size == 0) {
@@ -89,13 +95,17 @@ public class QuestionService {
             page = totalPage;
         }
 
-        pageDto.setPageInfo(totalPage, page, size);
-        //通过page计算offset
+        if (page == 0) {
+            page = 1;
+        }
         Integer offset = size * (page - 1);
+
+        pageDto.setPageInfo(totalPage, page, size);
+
         //offset和size查数据库拿到question
         List<Question> questions = questionMapper.listByUserId(userID, offset, size);
 
-        System.out.println("length"+questions.size());
+        System.out.println("length" + questions.size());
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         //questionlist-->加入user
@@ -110,5 +120,17 @@ public class QuestionService {
         //questionDto变为pageDto
         pageDto.setQuestions(questionDtoList);
         return pageDto;
+    }
+
+    public QuestionDto getById(Integer id) {
+
+        Question question = questionMapper.getById(id);
+        QuestionDto questionDto = new QuestionDto();
+        BeanUtils.copyProperties(question, questionDto);
+
+        User user = userMapper.findUserById(question.getCreator());
+        questionDto.setUser(user);
+
+        return questionDto;
     }
 }

@@ -5,6 +5,7 @@ import com.learn.majiang.dto.GithubUser;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.User;
 import com.learn.majiang.provider.GithubProvider;
+import com.learn.majiang.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
 @Controller
@@ -35,6 +35,9 @@ public class AuthorizeController {
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    UserService userService;
+
     /**
      * 接收git的code
      *
@@ -53,9 +56,7 @@ public class AuthorizeController {
         accessTokenDTO.setState(state);
         String token = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(token);
-        System.out.println("bio----->"+githubUser.getBio());
-        System.out.println("iconUrl-->"+githubUser.getAvatar_url());
-        if(githubUser!=null){
+        if (githubUser != null && githubUser.getId() != null) {
             //登录成功
             //写入数据库user
             User user = new User();
@@ -64,20 +65,28 @@ public class AuthorizeController {
             user.setToken(token1);
             user.setName(githubUser.getName());
             //这是git的account_id
-            user.setAccount_id(String.valueOf(githubUser.getId()));
-            user.setGmt_create(System.currentTimeMillis());
-            user.setGmt_modified(user.getGmt_create());
+            user.setAccountId(String.valueOf(githubUser.getId()));
             user.setBio(githubUser.getBio());
             user.setAvatarUrl(githubUser.getAvatar_url());
-            userMapper.insert(user);
+            //插入或是更新数据库
+            userService.createOrUpdate(user);
             //向前端写入cookie
-            response.addCookie(new Cookie("token",token1));
+            response.addCookie(new Cookie("token", token1));
             //注意redireact后面跟的是请求url 不是页面的名字
             return "redirect:/";
-        }else{
+        } else {
             //登录失败
             return "redirect:/";
         }
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
 }

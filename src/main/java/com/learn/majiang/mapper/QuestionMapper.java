@@ -1,7 +1,9 @@
 package com.learn.majiang.mapper;
 
+import com.learn.majiang.dto.QuestionDto;
 import com.learn.majiang.model.Question;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -23,4 +25,7 @@ public interface QuestionMapper {
 
     @Select("select count(1) from question where creator= #{id}")
     Integer countByUserId(@Param("id") Integer id);
+
+    @Select("select * from question where id=#{id}")
+    Question getById(@Param("id") Integer id);
 }
