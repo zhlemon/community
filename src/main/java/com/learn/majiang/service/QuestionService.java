@@ -5,7 +5,9 @@ import com.learn.majiang.dto.QuestionDto;
 import com.learn.majiang.mapper.QuestionMapper;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.Question;
+import com.learn.majiang.model.QuestionExample;
 import com.learn.majiang.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class QuestionService {
         //QuestionDto包含了Question和User
         PageDto pageDto = new PageDto();
         //查记录总数
-        Integer totalCount = questionMapper.count();
+        Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
 
         Integer totalPage;
         if (totalCount % size == 0) {
@@ -54,7 +56,8 @@ public class QuestionService {
 
         //offset和size查数据库拿到question
         System.out.println(offset);
-        List<Question> questions = questionMapper.list(offset, size);
+
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         //questionlist-->加入user
@@ -77,7 +80,12 @@ public class QuestionService {
         PageDto pageDto = new PageDto();
         //查记录总数
         System.out.println(userID);
-        Integer totalCount = questionMapper.countByUserId(userID);
+
+        QuestionExample example = new QuestionExample();
+        example.createCriteria().andCreatorEqualTo(userID);
+        Integer totalCount = (int)questionMapper.countByExample(example);
+
+
         System.out.println("totalCount" + totalCount);
 
         Integer totalPage;
@@ -103,7 +111,9 @@ public class QuestionService {
         pageDto.setPageInfo(totalPage, page, size);
 
         //offset和size查数据库拿到question
-        List<Question> questions = questionMapper.listByUserId(userID, offset, size);
+        QuestionExample example1 = new QuestionExample();
+        example1.createCriteria().andCreatorEqualTo(userID);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
 
         System.out.println("length" + questions.size());
         List<QuestionDto> questionDtoList = new ArrayList<>();
@@ -124,7 +134,7 @@ public class QuestionService {
 
     public QuestionDto getById(Integer id) {
 
-        Question question = questionMapper.getById(id);
+        Question question = questionMapper.selectByPrimaryKey(id);
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question, questionDto);
 
@@ -137,13 +147,15 @@ public class QuestionService {
     public void createOrUpdate(Question question) {
         if(question.getId()==null){
             //创建
-            question.setGmtCreate(System.currentTimeMillis());
-            question.setGmtModified(question.getGmtCreate());
-            questionMapper.create(question);
+            question.setGmtcreate(System.currentTimeMillis());
+            question.setGmtmodified(question.getGmtcreate());
+            questionMapper.insert(question);
         }else{
             //更新
-            question.setGmtModified(System.currentTimeMillis());
-            questionMapper. update(question);
+            question.setGmtmodified(System.currentTimeMillis());
+            QuestionExample example = new QuestionExample();
+            example.createCriteria().andIdEqualTo(question.getId());
+            questionMapper.updateByExampleSelective(question, example);
         }
     }
 }
