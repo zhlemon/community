@@ -23,13 +23,15 @@
             <hr>
             <div class="media" th:each="question : ${pageDtoInfo.getQuestions()}">
                 <div class="media-left">
-                    <a href="#">
+                    <a th:href="@{'/question/'+${question.id}}">
                         <img class="media-object img-rounded"
-                             th:src="${question.getUser()==null? 'https://avatars0.githubusercontent.com/u/28425702?v=4': question.getUser().getAvatarUrl()}">
+                             th:src="${question.getUser()==null? 'https://avatars0.githubusercontent.com/u/28425702?v=4': question.getUser().getAvatarurl()}">
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${question.getTitle()}">题目</h4>
+                    <h4 class="media-heading"  >
+                        <a th:href="@{'/question/'+${question.id}}" th:text="${question.getTitle()}"></a>
+                    </h4>
                     <span class="text"> <span class="text" th:text="${question.getCommentCount()}"></span>个回复 <span
                             class="text" th:text="${question.getViewCount()}"></span>次浏览 <span class="text"
                                                                                                th:text="${#dates.format(question.getGmtCreate(),'yyyy-MM-dd HH:mm')}"></span></span>

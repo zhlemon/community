@@ -59,7 +59,7 @@ public class QuestionService {
 
         //questionlist-->加入user
         for (Question question : questions) {
-            User user = userMapper.findUserById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question, questionDto);
             questionDto.setUser(user);
@@ -110,7 +110,7 @@ public class QuestionService {
 
         //questionlist-->加入user
         for (Question question : questions) {
-            User user = userMapper.findUserById(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question, questionDto);
             questionDto.setUser(user);
@@ -128,9 +128,22 @@ public class QuestionService {
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question, questionDto);
 
-        User user = userMapper.findUserById(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDto.setUser(user);
 
         return questionDto;
+    }
+
+    public void createOrUpdate(Question question) {
+        if(question.getId()==null){
+            //创建
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }else{
+            //更新
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper. update(question);
+        }
     }
 }

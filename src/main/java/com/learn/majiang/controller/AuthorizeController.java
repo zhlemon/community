@@ -67,7 +67,7 @@ public class AuthorizeController {
             //这是git的account_id
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setBio(githubUser.getBio());
-            user.setAvatarUrl(githubUser.getAvatar_url());
+            user.setAvatarurl(githubUser.getAvatar_url());
             //插入或是更新数据库
             userService.createOrUpdate(user);
             //向前端写入cookie
