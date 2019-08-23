@@ -2,6 +2,8 @@ package com.learn.majiang.service;
 
 import com.learn.majiang.dto.PageDto;
 import com.learn.majiang.dto.QuestionDto;
+import com.learn.majiang.exception.CustomizeErrorCode;
+import com.learn.majiang.exception.CustomizeException;
 import com.learn.majiang.mapper.QuestionMapper;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.Question;
@@ -135,6 +137,9 @@ public class QuestionService {
     public QuestionDto getById(Integer id) {
 
         Question question = questionMapper.selectByPrimaryKey(id);
+        if(question==null){
+            throw  new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question, questionDto);
 
@@ -155,7 +160,11 @@ public class QuestionService {
             question.setGmtmodified(System.currentTimeMillis());
             QuestionExample example = new QuestionExample();
             example.createCriteria().andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(question, example);
+            int updated = questionMapper.updateByExampleSelective(question, example);
+            if(updated!=1){
+                //未更新
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
