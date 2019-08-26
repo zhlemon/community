@@ -9,13 +9,13 @@ public class QuestionDto {
     private String title;
     //问题描述
     private String description;
-    private Long gmtCreate;
-    private Long gmtModified;
+    private Long gmtcreate;
+    private Long gmtmodified;
     //问题创建者
     private Integer creator;
-    private Integer commentCount;
-    private Integer viewCount;
-    private Integer likeCount;
+    private Integer commentcount;
+    private Integer viewcount;
+    private Integer likecount;
     private String tag;
     private User user;
 }

@@ -1,1 +1,1 @@
-## majiang Communit111
+ mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate

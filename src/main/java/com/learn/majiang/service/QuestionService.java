@@ -4,6 +4,7 @@ import com.learn.majiang.dto.PageDto;
 import com.learn.majiang.dto.QuestionDto;
 import com.learn.majiang.exception.CustomizeErrorCode;
 import com.learn.majiang.exception.CustomizeException;
+import com.learn.majiang.mapper.QuestionExtMapper;
 import com.learn.majiang.mapper.QuestionMapper;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.Question;
@@ -25,6 +26,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     public PageDto list(Integer page, Integer size) {
         //在service中通过questionMapper userMapper 组合生成一个QuestionDto
@@ -166,5 +170,12 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
         }
+    }
+
+    public void incView(Integer id) {
+        Question record = new Question();
+        record.setId(id);
+        record.setViewcount(1);
+        questionExtMapper.incView(record);
     }
 }
