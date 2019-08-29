@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.learn.majiang.dto.ResultDto;
 import com.learn.majiang.exception.CustomizeErrorCode;
 import com.learn.majiang.exception.CustomizeException;
-import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

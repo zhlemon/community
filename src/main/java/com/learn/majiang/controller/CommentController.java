@@ -1,6 +1,6 @@
 package com.learn.majiang.controller;
 
-import com.learn.majiang.dto.CommentDto;
+import com.learn.majiang.dto.CommentCreateDto;
 import com.learn.majiang.dto.ResultDto;
 import com.learn.majiang.exception.CustomizeErrorCode;
 import com.learn.majiang.mapper.CommentMapper;
@@ -27,7 +27,7 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Object post(@RequestBody CommentDto commentDto,
+    public Object post(@RequestBody CommentCreateDto commentCreateDto,
                        HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
         if(user==null){
@@ -35,9 +35,9 @@ public class CommentController {
         }
 
         Comment comment = new Comment();
-        comment.setParentid(commentDto.getParentId());
-        comment.setContent(commentDto.getContent());
-        comment.setType(commentDto.getType());
+        comment.setParentid(commentCreateDto.getParentId());
+        comment.setContent(commentCreateDto.getContent());
+        comment.setType(commentCreateDto.getType());
         comment.setLikecount(0L);
         comment.setGmtmodified(System.currentTimeMillis());
         comment.setGmtcreate(System.currentTimeMillis());

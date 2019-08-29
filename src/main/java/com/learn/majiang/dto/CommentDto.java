@@ -1,11 +1,17 @@
 package com.learn.majiang.dto;
 
+import com.learn.majiang.model.User;
 import lombok.Data;
 
 @Data
 public class CommentDto {
-    private Integer parentId;
-    private String content;
-    //类型 表示这是问题还是评论
+    private Integer id;
+    private Integer parentid;
     private Integer type;
+    private String commentor;
+    private Long gmtcreate;
+    private Long gmtmodified;
+    private Long likecount;
+    private String content;
+    private User user;
 }

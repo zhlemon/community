@@ -158,6 +158,9 @@ public class QuestionService {
             //创建
             question.setGmtcreate(System.currentTimeMillis());
             question.setGmtmodified(question.getGmtcreate());
+            question.setCommentcount(0);
+            question.setViewcount(0);
+            question.setLikecount(0);
             questionMapper.insert(question);
         }else{
             //更新

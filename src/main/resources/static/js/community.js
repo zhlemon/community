@@ -19,6 +19,7 @@ function post() {
                     if (isAccepted) {
                         //点击yes
                         window.open("https://github.com/login/oauth/authorize?client_id=6db3c5a336f42c783d22&redirect_uri=http://localhost:8887/callback&scope=user&state=1");
+                        window.localStorage.setItem("closable",true);
                     }
                 } else {
                     alert(response.message);
