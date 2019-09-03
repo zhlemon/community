@@ -3,6 +3,7 @@ package com.learn.majiang.controller;
 import com.learn.majiang.dto.PageDto;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.User;
+import com.learn.majiang.service.NotificationService;
 import com.learn.majiang.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,10 +18,13 @@ import javax.servlet.http.HttpServletRequest;
 public class ProfileController {
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/profiles/{action}")
     public String profile(@PathVariable(name = "action") String action,
@@ -38,13 +42,17 @@ public class ProfileController {
         if ("questions".equals(action)) {
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的提问");
+            PageDto pageDtoInfo = questionService.list(user.getId(), page, size);
+            model.addAttribute("pageDtoInfo", pageDtoInfo);
         } else if ("replies".equals(action)) {
+            PageDto pageDtoInfo=notificationService.list(user.getId(), page, size);
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "最新回复");
+            model.addAttribute("pageDtoInfo", pageDtoInfo);
+
         }
 
-        PageDto pageDtoInfo = questionService.list(user.getId(), page, size);
-        model.addAttribute("pageDtoInfo", pageDtoInfo);
+
         return "profile";
     }
 }

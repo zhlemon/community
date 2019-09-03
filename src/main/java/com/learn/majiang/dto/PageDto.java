@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class PageDto {
-    private List<QuestionDto> questions;
+public class PageDto<T> {
+    private List<T> data;
     //向前按钮
     private boolean showPrevious;
     //第一页按钮

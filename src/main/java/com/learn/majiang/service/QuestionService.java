@@ -33,7 +33,7 @@ public class QuestionService {
     public PageDto list(Integer page, Integer size) {
         //在service中通过questionMapper userMapper 组合生成一个QuestionDto
         //QuestionDto包含了Question和User
-        PageDto pageDto = new PageDto();
+        PageDto<QuestionDto> pageDto = new PageDto<>();
         //查记录总数
         Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
 
@@ -63,12 +63,14 @@ public class QuestionService {
         //offset和size查数据库拿到question
         System.out.println(offset);
 
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(offset, size));
+        QuestionExample example = new QuestionExample();
+        example.setOrderByClause("gmtCreate desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         //questionlist-->加入user
         for (Question question : questions) {
-            User user = userMapper.selectByPrimaryKey(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(Integer.valueOf(question.getCreator()));
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question, questionDto);
             questionDto.setUser(user);
@@ -76,7 +78,7 @@ public class QuestionService {
         }
 
         //questionDto变为pageDto
-        pageDto.setQuestions(questionDtoList);
+        pageDto.setData(questionDtoList);
         return pageDto;
     }
 
@@ -88,7 +90,7 @@ public class QuestionService {
         System.out.println(userID);
 
         QuestionExample example = new QuestionExample();
-        example.createCriteria().andCreatorEqualTo(userID);
+        example.createCriteria().andCreatorEqualTo(userID.toString());
         Integer totalCount = (int)questionMapper.countByExample(example);
 
 
@@ -118,7 +120,7 @@ public class QuestionService {
 
         //offset和size查数据库拿到question
         QuestionExample example1 = new QuestionExample();
-        example1.createCriteria().andCreatorEqualTo(userID);
+        example1.createCriteria().andCreatorEqualTo(userID.toString());
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
 
         System.out.println("length" + questions.size());
@@ -126,7 +128,7 @@ public class QuestionService {
 
         //questionlist-->加入user
         for (Question question : questions) {
-            User user = userMapper.selectByPrimaryKey(question.getCreator());
+            User user = userMapper.selectByPrimaryKey(Integer.valueOf(question.getCreator()));
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question, questionDto);
             questionDto.setUser(user);
@@ -134,7 +136,7 @@ public class QuestionService {
         }
 
         //questionDto变为pageDto
-        pageDto.setQuestions(questionDtoList);
+        pageDto.setData(questionDtoList);
         return pageDto;
     }
 
@@ -147,7 +149,7 @@ public class QuestionService {
         QuestionDto questionDto = new QuestionDto();
         BeanUtils.copyProperties(question, questionDto);
 
-        User user = userMapper.selectByPrimaryKey(question.getCreator());
+        User user = userMapper.selectByPrimaryKey(Integer.valueOf(question.getCreator()));
         questionDto.setUser(user);
 
         return questionDto;
@@ -181,4 +183,6 @@ public class QuestionService {
         record.setViewcount(1);
         questionExtMapper.incView(record);
     }
+
+
 }

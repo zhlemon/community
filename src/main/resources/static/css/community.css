@@ -39,6 +39,25 @@ body {
     cursor: pointer;
 }
 
+.menu .active{
+    color: #449ef3;
+}
 .menu .icon:hover{
     color: #449ef3;
+}
+
+.border {
+    margin-top: 10px;
+    padding-top: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.tag {
+    margin-right: 5px;
+}
+
+.question-wechat{
+    width: 100%;
 }

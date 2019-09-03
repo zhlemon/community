@@ -1,6 +1,8 @@
 package com.learn.majiang.controller;
 
+import com.learn.majiang.cache.TagCache;
 import com.learn.majiang.dto.QuestionDto;
+import com.learn.majiang.dto.TagDto;
 import com.learn.majiang.model.Question;
 import com.learn.majiang.model.User;
 import com.learn.majiang.service.QuestionService;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class PublishController {
@@ -20,6 +23,7 @@ public class PublishController {
     @Autowired
     QuestionService questionService;
 
+    //编辑question
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id") Integer id,
                        Model model) {
@@ -28,13 +32,17 @@ public class PublishController {
         model.addAttribute("description", question.getDescription());
         model.addAttribute("tag", question.getTag());
         model.addAttribute("id", question.getId());
+
         return "publish";
     }
 
 
-    //get渲染页面
+    //新增question
     @GetMapping("/publish")
-    public String publish() {
+    public String publish(Model model) {
+        List<TagDto> tags = TagCache.getTags();
+        model.addAttribute("tags",tags);
+
         return "publish";
     }
 
@@ -76,7 +84,7 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setCreator(user.getId());
+        question.setCreator(user.getId().toString());
         question.setId(id);
         questionService.createOrUpdate(question);
         return "redirect:/";

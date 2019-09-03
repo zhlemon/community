@@ -1,20 +1,21 @@
 package com.learn.majiang.controller;
 
 import com.learn.majiang.dto.CommentCreateDto;
+import com.learn.majiang.dto.CommentDto;
 import com.learn.majiang.dto.ResultDto;
+import com.learn.majiang.enums.CommentTypeEnum;
 import com.learn.majiang.exception.CustomizeErrorCode;
 import com.learn.majiang.mapper.CommentMapper;
 import com.learn.majiang.model.Comment;
 import com.learn.majiang.model.User;
 import com.learn.majiang.service.CommentService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -27,11 +28,15 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment",method = RequestMethod.POST)
-    public Object post(@RequestBody CommentCreateDto commentCreateDto,
+    public ResultDto post(@RequestBody CommentCreateDto commentCreateDto,
                        HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
         if(user==null){
             return ResultDto.errorOf(CustomizeErrorCode.USER_HAS_NOT_LOGIN_IN);
+        }
+
+        if(commentCreateDto==null|| StringUtils.isBlank(commentCreateDto.getContent())){
+            return ResultDto.errorOf(CustomizeErrorCode.COMMENT_IS_EMPTY);
         }
 
         Comment comment = new Comment();
@@ -45,5 +50,13 @@ public class CommentController {
 
         commentService.insert(comment);
         return ResultDto.okOf();
+    }
+
+    //回复评论
+    @ResponseBody
+    @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
+    public ResultDto<List<CommentDto>> comments(@PathVariable(name = "id") Integer id){
+        List<CommentDto> commentDtos = commentService.lisyByTargetId(id, CommentTypeEnum.COMMENT.getType());
+        return ResultDto.okOf(commentDtos);
     }
 }

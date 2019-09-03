@@ -45,7 +45,8 @@
         <!--schema数据库名 tableName表名 domainObjectName生成实体类的名字-->
         <table schema="majiang" tableName="user" domainObjectName="User"/>
         <table schema="majiang" tableName="question" domainObjectName="Question"/>
-        <table schema="majiang" tableName="Comment" domainObjectName="Comment"/>
+        <table schema="majiang" tableName="comment" domainObjectName="Comment"/>
+        <table schema="majiang" tableName="notification" domainObjectName="Notification"/>
 
     </context>
 </generatorConfiguration>

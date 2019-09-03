@@ -29,4 +29,10 @@
             commentCount = commentCount+ #{commentcount,jdbcType=INTEGER}
         where Id = #{id}
     </update>
+    <select id="selectRelated" parameterType="com.learn.majiang.model.Question" resultMap="BaseResultMap">
+        select *
+        from question
+        where Id != #{id}
+          and tag regexp #{tag}
+    </select>
 </mapper>
