@@ -61,7 +61,7 @@ public class QuestionService {
         //通过page计算offset
 
         //offset和size查数据库拿到question
-        System.out.println(offset);
+//        System.out.println(offset);
 
         QuestionExample example = new QuestionExample();
         example.setOrderByClause("gmtCreate desc");
@@ -184,5 +184,65 @@ public class QuestionService {
         questionExtMapper.incView(record);
     }
 
+    //模糊搜索问题
 
+    /**
+     *
+     * @param page 当前页
+     * @param size 页大小
+     * @param questionName 问题名字
+     * @return
+     */
+    public PageDto list(Integer page, Integer size,String questionName) {
+        //在service中通过questionMapper userMapper 组合生成一个QuestionDto
+        //QuestionDto包含了Question和User
+        PageDto<QuestionDto> pageDto = new PageDto<>();
+        //查记录总数
+        Integer totalCount = (int)questionMapper.countByExample(new QuestionExample());
+
+        Integer totalPage;
+        if (totalCount % size == 0) {
+            totalPage = totalCount / size;
+        } else {
+            totalPage = totalCount / size + 1;
+        }
+
+        if (page < 1) {
+            page = 1;
+        }
+
+        if (page > totalPage) {
+            page = totalPage;
+        }
+
+        if (page == 0) {
+            page = 1;
+        }
+        Integer offset = size * (page - 1);
+
+        pageDto.setPageInfo(totalPage, page, size);
+        //通过page计算offset
+
+        //offset和size查数据库拿到question
+//        System.out.println(offset);
+
+        QuestionExample example = new QuestionExample();
+        example.createCriteria().andTitleLike("%"+questionName+"%");
+        example.setOrderByClause("gmtCreate desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(offset, size));
+        List<QuestionDto> questionDtoList = new ArrayList<>();
+
+        //questionlist-->加入user
+        for (Question question : questions) {
+            User user = userMapper.selectByPrimaryKey(Integer.valueOf(question.getCreator()));
+            QuestionDto questionDto = new QuestionDto();
+            BeanUtils.copyProperties(question, questionDto);
+            questionDto.setUser(user);
+            questionDtoList.add(questionDto);
+        }
+
+        //questionDto变为pageDto
+        pageDto.setData(questionDtoList);
+        return pageDto;
+    }
 }

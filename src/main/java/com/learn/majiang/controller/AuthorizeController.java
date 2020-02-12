@@ -50,12 +50,18 @@ public class AuthorizeController {
                            @RequestParam(name = "state") String state,
                            HttpServletRequest request,
                            HttpServletResponse response) {
+
+        System.out.println("code : " + code);
+        System.out.println("state : " + state);
+
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
         accessTokenDTO.setClient_secret(clientSecret);
         accessTokenDTO.setCode(code);
         accessTokenDTO.setRedirect_uri(redirectUri);
         accessTokenDTO.setState(state);
+
+
         String token = githubProvider.getAccessToken(accessTokenDTO);
         GithubUser githubUser = githubProvider.getUser(token);
         if (githubUser != null && githubUser.getId() != null) {
@@ -74,11 +80,11 @@ public class AuthorizeController {
             userService.createOrUpdate(user);
             //向前端写入cookie
             response.addCookie(new Cookie("token", token1));
-            //注意redireact后面跟的是请求url 不是页面的名字
+            //注意redirect后面跟的是请求url 不是页面的名字
             return "redirect:/";
         } else {
             //登录失败
-            log.error("callback github error {}",githubUser);
+            log.error("callback github error {}", githubUser);
             return "redirect:/";
         }
     }
@@ -87,7 +93,7 @@ public class AuthorizeController {
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
         request.getSession().removeAttribute("user");
-        Cookie cookie = new Cookie("token",null);
+        Cookie cookie = new Cookie("token", null);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
         return "redirect:/";

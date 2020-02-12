@@ -36,8 +36,6 @@ public class PublishController {
         return "publish";
     }
 
-
-    //新增question
     @GetMapping("/publish")
     public String publish(Model model) {
         List<TagDto> tags = TagCache.getTags();
@@ -46,6 +44,7 @@ public class PublishController {
         return "publish";
     }
 
+    //新增question
     @PostMapping("/publish")
     public String doPublish(
             @RequestParam(value = "title",required = false) String title,

@@ -78,6 +78,9 @@
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>热门问题</h3>
+                <div class="list-group" >
+                    <a th:each="question : ${hotQuestion}" th:href="@{'/question/'+${question.id}}" class="list-group-item list-group-item-info" th:text="${question.getTitle()}"><span class="badge" th:text="${question.getViewcount()}"></span></a>
+                </div>
         </div>
     </div>
 

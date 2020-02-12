@@ -12,15 +12,15 @@
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" action="/search" method="get">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="搜索问题">
+                    <input type="text" class="form-control" placeholder="搜索问题" name="questionName">
                 </div>
                 <button type="submit" class="btn btn-default">搜索</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
 
-                <li><a href="/profiles/replies">通知<span class="badge" style="background: #359854;margin-left: 5px;">42</span></a> </li>
+                <li><a href="/profiles/replies">通知<span class="badge" style="background: #359854;margin-left: 5px;">[[${notificationNum}]]</span></a> </li>
 
                 <li th:if="${session.user!=null}">
                     <a href="/publish">提问</a>
@@ -38,7 +38,10 @@
                     </ul>
                 </li>
                 <li th:if="${session.user==null}">
-                    <a href="https://github.com/login/oauth/authorize?client_id=6db3c5a336f42c783d22&redirect_uri=http://localhost:8887/callback&scope=user&state=1">登录</a>
+                    <!--&scope=user&state=1-->
+                    <!--https://github.com/login/oauth/authorize?client_id=yourclientid&redirect_uri=yourredirect_uri-->
+                    <!--172.19.240.238-->
+                    <a href="https://github.com/login/oauth/authorize?client_id=6db3c5a336f42c783d22&redirect_uri=http://localhost:8081/callback&scope=user&state=1">登录</a>
                 </li>
             </ul>
         </div>

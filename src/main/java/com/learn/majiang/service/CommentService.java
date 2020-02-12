@@ -90,7 +90,7 @@ public class CommentService {
 
 
 
-    public List<CommentDto> lisyByTargetId(Integer id, Integer type) {
+    public List<CommentDto> listByTargetId(Integer id, Integer type) {
         CommentExample example = new CommentExample();
         example.createCriteria()
                 .andParentidEqualTo(id)
@@ -121,7 +121,7 @@ public class CommentService {
     }
 
     public Integer findCommentCount(Integer id) {
-        Integer counComment = commentExtMapper.counComment(id);
+        Integer counComment = commentExtMapper.countComment(id);
         return counComment;
     }
 

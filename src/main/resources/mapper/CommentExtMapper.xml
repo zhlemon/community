@@ -16,7 +16,7 @@
     <result column="likeCount" jdbcType="BIGINT" property="likecount" />
     <result column="content" jdbcType="VARCHAR" property="content" />
   </resultMap>
-  <select id="counComment" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+  <select id="countComment" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     select count(*)
     from comment
     where parentId = #{id,jdbcType=INTEGER}

@@ -1,20 +1,19 @@
 package com.learn.majiang.service;
 
-import com.learn.majiang.dto.NotificationDto;
-import com.learn.majiang.dto.PageDto;
-import com.learn.majiang.dto.QuestionDto;
+import com.learn.majiang.dto.ReplyDto;
+import com.learn.majiang.mapper.CommentMapper;
 import com.learn.majiang.mapper.NotificationMapper;
+import com.learn.majiang.mapper.QuestionMapper;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.*;
-import org.apache.ibatis.session.RowBounds;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,55 +25,88 @@ public class NotificationService {
     @Autowired
     private UserMapper userMapper;
 
-    public PageDto list(Integer id, Integer page, Integer size) {
+    @Autowired
+    private CommentMapper commentMapper;
 
-        PageDto<NotificationDto> pageDto = new PageDto<>();
+    @Autowired
+    private QuestionMapper questionMapper;
 
-        NotificationExample example = new NotificationExample();
-        example.createCriteria().andReceiverEqualTo(Long.valueOf(id));
-        Integer totalCount = (int)notificationMapper.countByExample(example);
+    /**
+     *
+     * @param userId 用户id
+     * @return 与之关联的回复
+     */
+    public List<ReplyDto> listAllNotifications(Integer userId) {
+        //当前用户提的问题
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria().andCreatorEqualTo(userId.toString());
+        List<Question> questions = questionMapper.selectByExample(questionExample);
+        List<Integer> questionsIds = questions.stream().map(Question::getId).collect(Collectors.toList());
 
-        Integer totalPage;
-        if (totalCount % size == 0) {
-            totalPage = totalCount / size;
-        } else {
-            totalPage = totalCount / size + 1;
+        NotificationExample notificationExample1 = new NotificationExample();
+        notificationExample1.createCriteria().andStatusEqualTo(1);
+        List<Notification> notifications1 = notificationMapper.selectByExample(notificationExample1);
+        List<Integer> readedList = notifications1.stream().map(notification -> notification.getOuterid().intValue()).collect(Collectors.toList());
+        questionsIds.removeAll(readedList);
+
+        ArrayList<ReplyDto> replyDtos = new ArrayList<>();
+        //通过userId查notification receiver-->notification
+        NotificationExample notificationExample = new NotificationExample();
+        notificationExample.createCriteria().andReceiverEqualTo(Long.valueOf(userId)).andStatusEqualTo(0);
+        List<Notification> notifications = notificationMapper.selectByExample(notificationExample);
+
+
+        HashSet<Long> notificationIds = new HashSet<>();
+        for (Notification notification : notifications) {
+
+            Long notifier = notification.getNotifier();
+            Integer status = notification.getStatus();
+            if (status==0){
+                notificationIds.add(notifier);
+            }
+
         }
 
-        if (page < 1) {
-            page = 1;
+
+        // 通过comment中的commentor
+        ArrayList<Comment> allComments = new ArrayList<>();
+
+        for (Long id : notificationIds) {
+            CommentExample commentExample = new CommentExample();
+            commentExample.createCriteria().andCommentorEqualTo(id.toString()).andParentidIn(questionsIds);
+            List<Comment> comments = commentMapper.selectByExample(commentExample);
+            allComments.addAll(comments);
         }
 
-        if (page > totalPage) {
-            page = totalPage;
+        for (Comment comment : allComments) {
+            String commentor = comment.getCommentor();
+            String content = comment.getContent();
+            Long gmtcreate = comment.getGmtcreate();
+            Integer questionId = comment.getParentid();
+            String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(gmtcreate));
+            UserExample userExample = new UserExample();
+            userExample.createCriteria().andAccountIdEqualTo(commentor);
+            List<User> users = userMapper.selectByExample(userExample);
+            User user = users.get(0);
+            String imageUrl = user.getAvatarurl();
+            String commentorName = user.getName();
+            ReplyDto replyDto = new ReplyDto();
+            replyDto.setCommentorName(commentorName);
+            replyDto.setCommentTime(date);
+            replyDto.setContent(content);
+            replyDto.setImage(imageUrl);
+            replyDto.setQuestionId(questionId);
+            replyDtos.add(replyDto);
         }
+        return replyDtos;
 
-        if (page == 0) {
-            page = 1;
-        }
-        Integer offset = size * (page - 1);
+    }
 
-        pageDto.setPageInfo(totalPage, page, size);
-
-        //offset和size查数据库拿到question
-        NotificationExample example1 = new NotificationExample();
-        example1.createCriteria().andReceiverEqualTo(Long.valueOf(id));
-        List<Notification> notifications = notificationMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
-
-        if(notifications.size()==0){
-            return pageDto;
-        }
-        Set<Integer> disUserId = notifications.stream().map(notify -> notify.getNotifier().intValue()).collect(Collectors.toSet());
-        ArrayList<Integer> userIds = new ArrayList<>(disUserId);
-
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andIdIn(userIds);
-        List<User> users = userMapper.selectByExample(userExample);
-        Map<Integer, User> userMap = users.stream().collect(Collectors.toMap(u -> u.getId(), u -> u));
-
-        List<NotificationDto> notificationDtos = new ArrayList<>();
-        pageDto.setData(notificationDtos);
-
-        return pageDto;
+    public Integer getNotificationNum(Integer userId){
+        NotificationExample notificationExample = new NotificationExample();
+        //status=0表示没有看过这个通知
+        notificationExample.createCriteria().andReceiverEqualTo(Long.valueOf(userId)).andStatusEqualTo(0);
+        List<Notification> notifications = notificationMapper.selectByExample(notificationExample);
+        return notifications.size();
     }
 }

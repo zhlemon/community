@@ -56,7 +56,7 @@ public class CommentController {
     @ResponseBody
     @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
     public ResultDto<List<CommentDto>> comments(@PathVariable(name = "id") Integer id){
-        List<CommentDto> commentDtos = commentService.lisyByTargetId(id, CommentTypeEnum.COMMENT.getType());
+        List<CommentDto> commentDtos = commentService.listByTargetId(id, CommentTypeEnum.COMMENT.getType());
         return ResultDto.okOf(commentDtos);
     }
 }

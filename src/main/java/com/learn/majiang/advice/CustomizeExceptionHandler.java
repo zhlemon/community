@@ -19,6 +19,7 @@ import java.io.PrintWriter;
  * 拦截可以handle的异常
  * 如果是404之类的需要 implements ErrorController
  */
+
 @ControllerAdvice
 public class CustomizeExceptionHandler {
 
@@ -26,8 +27,9 @@ public class CustomizeExceptionHandler {
     ModelAndView handle(Throwable e, Model model, HttpServletRequest request, HttpServletResponse response) {
 
         String contentType = request.getContentType();
+
         if ("application/json".equals(contentType)) {
-            //返回json contentType:application/json
+            //返回json contentType是http请求格式
             ResultDto resultDto ;
             if (e instanceof CustomizeException) {
                 resultDto = ResultDto.errorOf((CustomizeException) e);

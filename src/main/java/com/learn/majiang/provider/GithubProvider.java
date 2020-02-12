@@ -4,12 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.learn.majiang.dto.AccessTokenDTO;
 import com.learn.majiang.dto.GithubUser;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 public class GithubProvider {
+
+
+    @Value("${github.client.id}")
+    String clientId;
+
+    @Value("${github.client.secret}")
+    String clientSecret;
+
+    @Value("github.redirect.uri")
+    String redirectUrl;
 
     public String getAccessToken(AccessTokenDTO accessTokenDTO) {
         //okhttp post
@@ -21,6 +32,8 @@ public class GithubProvider {
                 .url("https://github.com/login/oauth/access_token")
                 .post(body)
                 .build();
+
+
         try (Response response = client.newCall(request).execute()) {
             String token = response.body().string();
             String tokenStr = token.split("&")[0].split("=")[1];

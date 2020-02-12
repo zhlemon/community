@@ -61,3 +61,22 @@ body {
 .question-wechat{
     width: 100%;
 }
+
+.notificationComment {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.notificationImage {
+    width: 50px;
+    height: 50px;
+}
+/* #对应id */
+/* .对应class*/
+/* 不加对应html 标签 */
+.commentText {
+    color: #337ab7;
+    size: 13px;
+    font-size: 15px;
+}
+

@@ -19,6 +19,12 @@
     </properties>
 
     <dependencies>
+
+        <!--elasticsearch-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 工具包 判断数据是否为空 -->
         <dependency>
             <groupId>org.apache.commons</groupId>

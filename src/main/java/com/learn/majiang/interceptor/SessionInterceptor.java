@@ -1,5 +1,7 @@
 package com.learn.majiang.interceptor;
 
+import com.learn.majiang.exception.CustomizeErrorCode;
+import com.learn.majiang.exception.CustomizeException;
 import com.learn.majiang.mapper.UserMapper;
 import com.learn.majiang.model.User;
 import com.learn.majiang.model.UserExample;
@@ -13,6 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * 拦截器
+ * 没有token不允许登录
+ */
 @Component
 public class SessionInterceptor implements HandlerInterceptor {
 
@@ -23,7 +29,6 @@ public class SessionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         Cookie[] cookies = request.getCookies();
-        User user = null;
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
